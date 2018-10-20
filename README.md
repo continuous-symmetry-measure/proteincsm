@@ -1,2 +1,2 @@
 # proteincsm
-Continuous symmetry measures (CSM)  for protein
+Continuous Symmetry Measures (CSM) of proteins
