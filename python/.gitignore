@@ -1,0 +1,8 @@
+*.pyd
+*.obj
+csm.egg-info/
+build/
+dist/
+*.zip
+test_env/
+results/
