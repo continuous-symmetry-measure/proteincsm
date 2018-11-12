@@ -1,24 +1,22 @@
-#CSM Python API
+# CSM Python API
 
-##Introduction
+## Introduction
 
 A basic run of CSM would be as follows:
-1. Read the molecule using the class `MoleculeReader`, which returns an instance of class 
-`Molecule`
+1. Read the molecule using the class `MoleculeReader`, which returns an instance of the class `Molecule`
 2. There are three calculation classes: 
-`csm.calculations.Exact`, `csm.calculations.Trivial`, and `csm.calculations.Approx`.
-Each has its own relevant arguments. All of them have the function calculate().
+`csm.calculations.Exact`, `csm.calculations.Trivial`, and `csm.calculations.Approx`. Each has its own relevant arguments. All of them have the function calculate().
 The result can be accessed via the property `result`, which contains an instance of the class `CSMResult`.
 In addition, certain statistics about the calculation are available in the property `statistics`- the kind of
 Statistics class returned varies by calculation.
 3. Additional information can be obtained from the `CSMResult` class that is returned with the property
-`result`. For example, it is possible to call `compute_local_csm` and obtain the local CSM per atom
+`result`, For example, it is possible to call `compute_local_csm` and obtain the local CSM per atom
 in the molecule
 4. The result can be passed to a `ResultWriter` class, eg `FileWriter`
 
 A simple example:
 
-```
+``` python
 from csm.molecule.molecule import MoleculeReader
 from csm.calculations.data_classes import Operation
 from csm.calculations import Exact
@@ -34,13 +32,13 @@ FileWriter(calculation.result, "myfile.out", op, json_output=True)
 This program will print a json dictionary of the results of an exact calculation on myfile.mol into the file myfile.out
 
 
-##The MoleculeReader Class
+## The MoleculeReader Class
 
 A static class that creates instances of Molecule from files or strings.
 
-###Methods:
+### Methods:
 
-####`from_string(...)`:
+#### `from_string(...)`:
 
 A static method that returns a Molecule instance read from a string
 
@@ -59,7 +57,7 @@ A static method that returns a Molecule instance read from a string
         :param use_mass: boolean, default False, when True atomic mass will be used, when False all atoms have a mass of 1
         :return: an instance of class Molecule
 
-####`from_file(...)`:
+#### `from_file(...)`:
 
 A static method that returns a Molecule instance read from a file
 
@@ -89,14 +87,14 @@ A static method that returns a Molecule instance read from a file
         :return: an instance of class Molecule
 ```
 
-##The Molecule Class
+## The Molecule Class
 
 
 Represents a molecule for CSM calculation.
 
-###Methods:
+### Methods:
 
-####`print_equivalence_class_summary(display_chains=False)`
+#### `print_equivalence_class_summary(display_chains=False)`
 
 A method created for backwards compatibility. Initialization statistics regarding
 equivalence classes that were previously printed during
@@ -105,34 +103,34 @@ initialization, can be printed using this function.
 It receives one argument, `display_chains`. When true,
 statistics on the molecule's chains will also be printed.
 
-####`to_json()`
+#### `to_json()`
 
 returns a dictionary of the Molecule's field values, can be saved to a file and read from,
 using `from_json`
 
-####`from_json(json)`
+#### `from_json(json)`
 
 a static method, will return a Molecule with fields initialized
 based on the values within a json dictionary, presumably created using
 to_json.
 
-###Properties:
+### Properties:
 
-####atoms
-####norm_factor
-####chains
-####center_of_mass
-####bondset
-####equivalence_classes
+#### atoms
+#### norm_factor
+#### chains
+#### center_of_mass
+#### bondset
+#### equivalence_classes
 
-##The Operation Class
+## The Operation Class
 
 This class is passed to all the calculation classes.
 
 It is possible to replace this class with a NamedTuple. The only requirement for the object being passed is it
 must have a field `type` and it must have a field `order`
 
-###Methods
+### Methods
 
 #### `__init__(op, sn_max=8)`
 
@@ -144,7 +142,7 @@ When not specified, the default value is 8.
 
 When not CH, it is ignored regardless.
 
-##The Calculation Class
+## The Calculation Class
 
 ExactCalculation, ApproxCalculation, and TrivialCalculation all inherit from the base Calculation class.
 
@@ -161,11 +159,11 @@ ApproxCalculation has a property `statistics` which returns an instance of `Appr
 
 TrivialCalculation has a filler property `statistics` which returns an empty dictionary.
 
-##The ExactCalculation Class
+## The ExactCalculation Class
 
-###Initialization:
+### Initialization:
 
-```
+```python
  def __init__(self, operation, molecule, keep_structure=False, perm=None, no_constraint=False, timeout=300, callback_func=None, *args, **kwargs):
         A class for running the exact CSM Algorithm
         :param operation: instance of Operation class or named tuple, with fields for name and order, that describes the symmetry
@@ -180,22 +178,22 @@ TrivialCalculation has a filler property `statistics` which returns an empty dic
         CSMState, can be used for printing in-progress reports, outputting to an excel, etc.
 ```
 
-###Additional properties:
+### Additional properties:
 
-####perm_count
+#### perm_count
 
 The number of permutations yielded by the permuter
 
-####dead_ends
+#### dead_ends
 
 The number of possible permutations that were cut off for breaking a constraint
 
-####num_branches
+#### num_branches
 
 Including dead-ends, the total number of decision branches in the permutation tree
 
-##The ApproxCalculation Class
-```
+## The ApproxCalculation Class
+```python
     def __init__(self, operation, molecule, approx_algorithm='hungarian', use_best_dir=False, get_orthogonal=True, detect_outliers=False, dirs=None, *args, **kwargs):
         """
         Initializes the ApproxCalculation
@@ -209,9 +207,9 @@ Including dead-ends, the total number of decision branches in the permutation tr
         """
 ```
 
-###Additional methods
+### Additional methods
 
-####The log() function
+#### The `log()` function
 
 Throughout the approx calculation, calls are made to the ApproxCalculations log(*strings) function. 
 
@@ -220,7 +218,7 @@ ApproxCalculation and override the base behavior, for example printing the strin
 a file.
 
 
-##The TrivialCalculation Class
+## The TrivialCalculation Class
 
 ```
     def __init__(self, operation, molecule, use_chains=True, *args, **kwargs):
@@ -232,14 +230,14 @@ a file.
         """
 ```
 
-##The CSMResult Class
+## The CSMResult Class
 
 
 This is a class returned from the program representing the results of the CSM calculation.
 
 
 
-###properties
+### properties
 
     """
     Properties:
@@ -259,17 +257,17 @@ This is a class returned from the program representing the results of the CSM ca
                     to algorithm result
     """
 
-###methods
+### methods
 
-####create_symmetric_structure
+#### create_symmetric_structure
 
 automatically called in init, uses the calculated permutation and direction to create the nearest symmetric structure
 
-####compute_local_csm
+#### compute_local_csm
 
 **Not** automatically called in init, when called, calculated the local csm (contribution of each atom to the overall CSM) 
 
-##The ResultWriter Class
+## The ResultWriter Class
 
   A class for writing results. It can write molecules to various openbabel and CSM formats, 
     can write headers, local csm, permutation, etc. Most functions prefixed write_ expect a filestream. 
@@ -288,11 +286,11 @@ automatically called in init, uses the calculated permutation and direction to c
    
    ` def __init__(self, result, out_file_name, op_name, format, print_local=False, json_output=False, *args, **kwargs):`
    
-##Additional Examples
+## Additional Examples
 
 The `main()` of the main CSM commandline program is as follows:
 
-```
+```python
         #step one: parse args
     dictionary_args = get_split_arguments(args)
     try:
