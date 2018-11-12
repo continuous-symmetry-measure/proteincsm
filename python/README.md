@@ -6,7 +6,7 @@ README v0.1 / 15 March 2018
 
 The Protein CSM (Continuous Symmetry Measure) program allows users to measure the continuous symmetry of homomer proteins.
 
-##Features
+## Features
 
 
  * The hungarian algorithm for approximating the continuous symmetry measure of a homomer proteincsm
@@ -48,30 +48,25 @@ Alon, G., and Tuvi-Arad, I. "Improved algorithms for symmetry analysis: Structur
 
 H. Zabrodsky, S. Peleg and D. Avnir "Continuous Symmetry Measures" J. Am. Chem. Soc., 114, 7843-7851 (1992) 
 
-Chaim Dryzun, Amir Zait and David Avnir �Quantitative Symmetry and Chirality�A Fast Computational Algorithm for Large Structures: Proteins, Macromolecules, Nanotubes, and Unit Cells� J. Comput. Chem., 32, 2526 � 2538, (2011) 
+Chaim Dryzun, Amir Zait and David Avnir "Quantitative Symmetry and Chirality A Fast Computational Algorithm for Large Structures: Proteins, Macromolecules, Nanotubes, and Unit Cells J. Comput. Chem., 32, 2526 - 2538, (2011) 
 ```
 
 ## Credits
 
 Science/Math:
 
-David Avnir - Hebrew University
-
-Inbal Tuvi-Arad - Open University
-
-Gil Alon - Open University
+* David Avnir - Hebrew University
+* Inbal Tuvi-Arad - Open University
+* Gil Alon - Open University
 
 Programming:
-
-The Research Software Company (chelem.co.il)
-
-Testing, scripts, additional technical support:
-
-Sagiv - Open University
+* The Research Software Company (chelem.co.il)
+* Testing, scripts, additional technical support:
+* Sagiv Barhoom - The Open University
 
 The code for the hungarian algorithm is copyright (c) 2012, Jacob Frelinger
 
-#Contact
+# Contact
 
 For chemistry questions, contact Inbal Tuvi-Arad at inbaltu@openu.ac.il
 
