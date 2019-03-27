@@ -64,21 +64,24 @@ Original Code by Avnir and coworkers:
 
 ## CREDITS
 
-Science/Math:
+**Science/Math:**
 
 Dr. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel
+
 Dr. Gil Alon, Department of Mathematics and Computer Science, The Open University of Israel
+
 Prof. David Avnir, Institute of Chemistry, The Hebrew University of Jerusalem
 
-Programming:
+**Programming:**
 
 The Research Software Company (chelem.co.il)
 
-Testing, scripts and additional technical support:
+**Testing, scripts and additional technical support:**
 
 Sagiv Barhoom,The Open University of Israel
 
-Intensive testing:
+**Intensive testing:**
+
 Yaffa Shalit, The Open University of Israel
 
 The code for the hungarian algorithm is copyright (c) 2012, Jacob Frelinger
