@@ -38,7 +38,7 @@ CSM can be installed using:
 
 `pip install proteincsm --extra-index-url=https://repo.fury.io/theresearchsoftwarecompany`
 
-You can also install CSM from the source. Note that CSM requires Eigen, and the variable EIGEN_INCLUDE_DIR in setup.py should be modified accordingly.
+You can also install CSM from the source. 
 
 ## CITATIONS 
 
