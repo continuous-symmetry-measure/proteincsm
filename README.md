@@ -24,10 +24,11 @@ proteincsm can be installed on Windows and Linux machines.
 ### REQUIREMENTS
 
 Before installing CSM, please install:
-*Openbabel (http://openbabel.org/wiki/Category:Installation), 
+
+* Openbabel (http://openbabel.org/wiki/Category:Installation), 
 version 2.4.0 or later.
-*openbabel's python bindings (`pip install openbabel`) 
-*numpy (`pip install numpy`)
+* openbabel's python bindings (`pip install openbabel`) 
+* numpy (`pip install numpy`)
 
 Because installing openbabel correctly is a delicate and bug-prone process, an alternative method of installing CSM is available using Conda, and is described in the file conda_install_instructions.txt
 
