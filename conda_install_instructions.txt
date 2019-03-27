@@ -1,0 +1,26 @@
+These instructions have been tested on a CentOS 7 server, an Ubuntu 18 server, and an Ubuntu 18 desktop. In principle they should work in other environments, like Mac, but have not been tested there and may need some kinks sorted out. They have only been tested with 64 bit python.
+ 
+CSM can be installed into a conda environment that contains numpy and openbabel. 
+
+There are some dependencies required first.
+
+Openbabel requires that a c++ compiler be installed, and the X11 libraries
+Conda requires an unzipping package like bzip2
+CSM requires the python 3 development library (and a c++ compiler, same as openbabel)
+
+Ubuntu: `apt-get install libxrender-dev libxext-dev bzip2 g++ python3-dev`
+CentOS: `yum install libXrender libXext bzip2 gcc-c++ python-devel`
+
+We recommend installing the miniconda minimal conda package and environment manager for 64 bit python 3, which can be downloaded from here: https://docs.conda.io/en/latest/miniconda.html
+These instructions have not been tested with Anaconda, but should work with it as well.
+
+after installing conda and making sure to add it to your .bashrc file to enable running the conda command:
+
+1. run `conda update conda` to make sure your conda is fully up to date, or you may encounter compilation problems
+2. we recommend creating a new conda environment for csm, `conda create -n csm` followed by `conda activate csm`, although you can install into the base conda environment if you want.
+3. run `conda install numpy`
+4. run `conda install -c openbabel openbabel`
+5. run `pip install proteincsm --no-dependencies --extra-index-url=https://repo.fury.io/theresearchsoftwarecompany`
+
+You can now run csm from within the activated conda environment into which you installed it, using the csm command. For example: `csm c2 inputmol.pdb output.pdb`. You can run `csm -h` to get help documentation with a list of options.
+

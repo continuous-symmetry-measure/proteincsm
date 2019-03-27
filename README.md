@@ -29,11 +29,13 @@ version 2.4.0 or later.
 *openbabel's python bindings (`pip install openbabel`) 
 *numpy (`pip install numpy`)
 
+Because installing openbabel correctly is a delicate and bug-prone process, an alternative method of installing CSM is available using Conda, and is described in the file conda_install_instructions.txt
+
 ### INSTALLATION 
 
 CSM can be installed using:
 
-`pip install protein_csm --extra-index-url https://github.com/continuous-symmetry/proteincsm`
+`pip install proteincsm --extra-index-url=https://repo.fury.io/theresearchsoftwarecompany`
 
 You can also install CSM from the source. Note that CSM requires Eigen, and the variable EIGEN_INCLUDE_DIR in setup.py should be modified accordingly.
 
