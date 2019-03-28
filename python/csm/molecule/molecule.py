@@ -913,7 +913,7 @@ class MoleculeReader:
 
         mol.metadata.format=format
         mol.metadata.babel_bond=babel_bond
-        mol.metadata.filename=os.path.basename(in_file_name)
+        mol.metadata.filepath=in_file_name
 
         if use_sequence:
             if format.lower() == 'pdb':

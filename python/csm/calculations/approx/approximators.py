@@ -16,7 +16,6 @@ from csm.calculations.basic_calculations import now, run_time
 from csm.calculations.constants import MAXDOUBLE, CSM_THRESHOLD, MINDOUBLE
 from csm.calculations.data_classes import CSMState, Operation, CSMResult
 from csm.calculations.exact_calculations import ExactCalculation
-from csm.calculations.permuters import ContraintsSelectedFromDistanceListPermuter, ConstraintsOrderedByDistancePermuter
 from csm.input_output.formatters import csm_log as print
 from csm.input_output.formatters import format_CSM
 from csm.molecule.molecule import MoleculeFactory
