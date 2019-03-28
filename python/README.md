@@ -1,4 +1,4 @@
-README v0.1 / 15 March 2018
+README v0.2 / 28 March 2019
 
 # CSM
 
