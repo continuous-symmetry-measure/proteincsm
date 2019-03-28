@@ -70,7 +70,7 @@ def _process_arguments(parse_res):
 
     # the first three positional arguments
 
-    op = Operation(parse_res.type)
+    op = Operation(parse_res.type, parse_res.sn_max)
 
     dictionary_args['operation'] = op
     dictionary_args['op_type'] = op.type
