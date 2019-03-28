@@ -1,17 +1,19 @@
 """
 @author: Devora Witty
 """
-import sys
-import os
+import json
+import logging
 from collections import OrderedDict
+from pathlib import Path
+
 import copy
+import numpy as np
+import os
 from openbabel import OBAtomAtomIter, OBConversion, OBMol, OBMolAtomIter, obErrorLog, obError
+
+from csm.input_output.formatters import csm_log as print
 from csm.molecule.atom import Atom, GetAtomicSymbol
 from csm.molecule.normalizations import normalize_coords, de_normalize_coords, calculate_norm_factor
-import logging
-import numpy as np
-import json
-from csm.input_output.formatters import csm_log as print
 
 logger = logging.getLogger("csm")
 
@@ -84,6 +86,7 @@ class Chains(OrderedDict):
     def index_to_string(self, index):
         return self._indexes_to_strings[index]
 
+
 class MoleculeMetaData:
     '''
     This class is primarily used to store metadata needed to write results, although format+filecontent+babel_bond
@@ -93,55 +96,56 @@ class MoleculeMetaData:
     file_content is set in read_obm or read_csm
     index is set in read_multiple_molecules, or, revoltingly, in do_commands after calling redo_molecule
     '''
-    def __init__(self, mol_contents=[], format=None, filename="", babel_bond=False, index=0, title=None):
-        self.file_content = mol_contents
+
+    def __init__(self, file_content=[], format=None, filepath="", babel_bond=False, index=0, initial_title="",
+                 initial_comments="", use_filename=True, out_format=None):
+        self.file_content = file_content
         self.format = format
-        self.filename=filename
+        self._out_format = out_format
+        self.filepath = filepath
         self.babel_bond = babel_bond
-        self.index=index
-        self.title=title
-        self.use_filename=True
+        self.index = index
+        self.initial_title = initial_title
+        self.initial_comments = initial_comments
+        self.use_filename = use_filename
+
+    @property
+    def filename(self):
+        return os.path.basename(self.filepath)
+
+    @property
+    def out_format(self):
+        if self._out_format:
+            return self._out_format
+        return self.format
 
     @staticmethod
     def from_dict(self, dict):
-        file_content = dict["file_content"]
-        format = dict["format"]
-        filename=dict["filename"]
-        babel_bond = dict["babel_bond"]
-        index=dict["index"]
-        title=dict["title"]
-        m= MoleculeMetaData(file_content, format, filename, babel_bond, index, title)
-        m.use_filename=dict["use_filename"]
+        m = MoleculeData(**dict)
+        return m
 
     def to_dict(self):
-        return {
-            "file_content":self.file_content,
-            "format":self.format,
-            "filename":self.filename,
-            "babel_bond":self.babel_bond,
-            "index":self.index,
-            "title":self.title,
-            "use_filename":self.use_filename
-        }
+        return vars(self)
 
-    def header(self, no_file_format=False, no_str_format=False):
+    def appellation(self, no_file_format=False, no_leading_zeros=False):
+        '''
+        the name for the molecule when printing to screen or creating tables.
+        if the molecule was read from a folder, it's the filename
+        otherwise it's the internal index
+        :param no_file_format: remove file ending (eg .xyz)
+        :param no_leading_zeros: print the index without leading zeroes
+        :return: 
+        '''
         if self.use_filename:
             if no_file_format:
-                return self.filename[:-4]
+                return Path(self.filename).stem
             return self.filename
 
-        mol_index=self.index+1 #start from 1 instead of 0
-
-        if self.title: #replace with internal index if relevant
-            start_index=self.title.find("mol_index=")
-            if start_index != -1:
-                end_index=self.title.find(";")
-                start_index=start_index+10
-                mol_index=int(self.title[start_index:end_index])
-        if no_str_format:
+        mol_index = self.index + 1  # start from 1 instead of 0
+        if no_leading_zeros:
             return str(mol_index)
 
-        mol_str="%04d" % mol_index
+        mol_str = "%04d" % mol_index
         return mol_str
 
 
@@ -174,10 +178,12 @@ class Molecule:
             # getting rid of obmol:
             # self._obmol = obmol
             self._deleted_atom_indices = []
-            self.has_been_normalized=None
+            self.has_been_normalized = None
 
-            self.metadata=MoleculeMetaData()
+            self.metadata = MoleculeMetaData()
 
+    def __str__(self):
+        return self.metadata.appellation()
 
     def copy(self):
         # deepcopy is used only for atoms,
@@ -187,9 +193,10 @@ class Molecule:
         m = Molecule(to_copy=True)
         m._atoms = copy.deepcopy(self.atoms)
         m._norm_factor = self.norm_factor
+        m.has_been_normalized = self.has_been_normalized
 
         m._deleted_atom_indices = self._deleted_atom_indices
-        m.metadata=self.metadata
+        m.metadata = self.metadata
 
         m._bondset = self.bondset
         m._Q = self.Q
@@ -200,6 +207,7 @@ class Molecule:
         m._groups_with_internal_chains = self._groups_with_internal_chains
         m._chains_with_internal_groups = self._chains_with_internal_groups
         m._chain_equivalences = self._chain_equivalences
+
         return m
 
     def to_dict(self):
@@ -221,7 +229,7 @@ class Molecule:
             # Classes:
             # obmol: needed for printing:
             "deleted indices": self._deleted_atom_indices,
-            "metadata":self.metadata.to_dict(),
+            "metadata": self.metadata.to_dict(),
 
             # chains
             "chains": self.chains.to_array()
@@ -242,14 +250,14 @@ class Molecule:
         m = Molecule(atoms)
 
         m.norm_factor = in_dict["norm factor"]
-        m.has_been_normalized=in_dict["normalized"]
+        m.has_been_normalized = in_dict["normalized"]
 
         c = Chains()
         c.from_array(in_dict["chains"])
         m._chains = c
 
         m._deleted_atom_indices = in_dict["deleted indices"]
-        m.metadata= MoleculeMetaData.from_dict(in_dict["metadata"])
+        m.metadata = MoleculeMetaData.from_dict(in_dict["metadata"])
 
         m._center_of_mass = in_dict["center of mass"]
         m._equivalence_classes = in_dict["equivalence classes"]
@@ -424,11 +432,8 @@ class Molecule:
     def _calculate_equivalency(self):
         """
         Preprocess a molecule based on the arguments passed to CSM
-        :param remove_hy: True if hydrogen atoms should be removed
-        :param ignore_hy: True when hydrogen atoms should be ignored when calculating the equivalence classes
-        :param kwargs: Place holder for all other csm_args.
-        You can call it by passing **csm_args
         """
+
         def is_similar(atoms_group_num, a, b):
             found = True
             mark = set()
@@ -481,7 +486,7 @@ class Molecule:
 
             group_num += 1
 
-        #logger.debug("initial number of groups:" + str(group_num))
+        # logger.debug("initial number of groups:" + str(group_num))
         # iteratively refine the breakdown into groups
         # break into subgroups at an infinite depth - as long as there's something to break, it is broken
 
@@ -518,7 +523,7 @@ class Molecule:
 
             groups.extend(new_groups)
 
-        #logger.debug("Broken into %d groups with %d iterations." % (group_num, num_iters))
+        # logger.debug("Broken into %d groups with %d iterations." % (group_num, num_iters))
 
         self._equivalence_classes = groups
         for group in groups:
@@ -538,7 +543,7 @@ class Molecule:
 
         for i in range(len(self._atoms)):
             if remove_hy:
-                if self._atoms[i].symbol =="H":
+                if self._atoms[i].symbol == "H":
                     removed_atoms.append(i)
                     fixed_indexes[i] = None
                 else:
@@ -553,8 +558,7 @@ class Molecule:
                     # however many atoms have been removed up to this index is the amount its index needs adjusting by
                     fixed_indexes[i] -= len(removed_atoms)
 
-
-        # adjust the indices before we do any popping whatsoever
+        # adjust the connectivity indices before we do any popping whatsoever
         for i, atom in enumerate(self._atoms):
             adjacent_new = []
             for adjacent in atom.adjacent:
@@ -568,7 +572,8 @@ class Molecule:
             # if remove_hy: #this is meant to affect print at end
             # self._obmol.DeleteAtom(self._obmol.GetAtom(to_remove + 1))
 
-        #logger.debug(len(removed_atoms), "atoms removed")
+        self._create_bondset()
+        # logger.debug(len(removed_atoms), "atoms removed")
 
     def _calculate_center_of_mass(self):
         coords = [atom.pos for atom in self._atoms]
@@ -601,7 +606,7 @@ class Molecule:
         for i in range(size):
             self._atoms[i].pos = norm_coords[i]
         self.create_Q()
-        self.has_been_normalized=True
+        self.has_been_normalized = True
 
     def de_normalize(self):
         coords = [atom.pos for atom in self._atoms]
@@ -611,7 +616,7 @@ class Molecule:
         for i in range(size):
             self._atoms[i].pos = denorm_coords[i]
         self.create_Q()
-        self.has_been_normalized=False
+        self.has_been_normalized = False
 
     def create_Q(self):
         self._Q = np.array([np.array(atom.pos) for atom in self.atoms])
@@ -629,7 +634,7 @@ class Molecule:
         for key in lengths:
             print("%d group%s of length %d" % (lengths[key], 's' if lengths[key] and lengths[key] > 1 else '', key))
 
-        if True: #len(self.chains) > 1:
+        if True:
                 for chain in self.chains:
                     print("Chain %s of length %d" % (self.chains._indexes_to_strings[chain], len(self.chains[chain])))
                 print("%d equivalence class%s of chains" % (len(self.chain_equivalences), 'es' if lengths[key] else ''))
@@ -639,7 +644,7 @@ class Molecule:
                         chainstring += " "
                         chainstring += str(self.chains._indexes_to_strings[index])
                     print(str(chainstring))
-            #else:
+            # else:
             #    print("Molecule has no chains")
 
     def _complete_initialization(self, use_chains, remove_hy, select_atoms=[]):
@@ -670,10 +675,6 @@ class Molecule:
                     coords += str(coor)
             coords += "\n"
         return coords
-
-
-
-
 
 
 class MoleculeFactory:
@@ -708,7 +709,7 @@ class MoleculeFactory:
                 atoms.append(atom)
 
         mol = Molecule(atoms)
-        mol._calculate_equivalency(False, False)
+        mol._calculate_equivalency()
         mol.normalize()
         return mol
 
@@ -786,19 +787,20 @@ class PDBLine:
             self.duplicate_index = ""
             self.alternate_location = pdb_line[16]
             try:
-                self.remoteness=self.atom_symbol[1]
-                self.branch_designation=self.atom_symbol[2]
-                self.duplicate_index=self.atom_symbol[3]
-            except: #TODO: check that what information is available gets recorded
-                pass #because it may be attempting to access information that doesn't exist so it's ok...
+                self.remoteness = self.atom_symbol[1]
+                self.branch_designation = self.atom_symbol[2]
+                self.duplicate_index = self.atom_symbol[3]
+            except:  # TODO: check that what information is available gets recorded
+                pass  # because it may be attempting to access information that doesn't exist so it's ok...
         else:
-            self.atom_symbol=pdb_line[12:14].strip()
+            self.atom_symbol = pdb_line[12:14].strip()
             self.remoteness = pdb_line[14]
             self.branch_designation = pdb_line[15]
             self.alternate_location = pdb_line[16]
 
         if not self.atom_symbol:
-            raise ValueError("PDB missing atom symbol information in atom name (columns 13-16). Please check that your pdb is formatted correctly")
+            raise ValueError(
+                "PDB missing atom symbol information in atom name (columns 13-16). Please check that your pdb is formatted correctly")
 
     def _init_conect_record(self, pdb_line):
         adjacent_atoms = []
@@ -867,45 +869,47 @@ class MoleculeReader:
                   remove_hy=False, ignore_sym=False, use_mass=False,
                   read_fragments=False, use_sequence=False,
                   keep_structure=False, select_atoms=[], conn_file=None,
+                  out_format=None,
                   *args, **kwargs):
         """
         :param in_file_name: the name of the file to read the molecule from
         :param in_format: the format of the string (any BabelBond supported format, eg "mol", "xyz")
         :param initialize: boolean, default True, when True equivalence classes and chains are calculated for the molecule
-        :param use_chains: boolean, default False, when True chains are read from the string 
+        :param use_chains: boolean, default False, when True chains are read from the string
         :param babel_bond: boolean, default False, when True OpenBabel will attempt to guess connectivity information
         :param remove_hy: boolean, default False, when True hydrogen atoms will be removed
-        :param ignore_sym: boolean, default False, when True all atom symbols will be "X" instead of elements 
+        :param ignore_sym: boolean, default False, when True all atom symbols will be "X" instead of elements
                             (this affects equivalence class calculation)
         :param use_mass: boolean, default False, when True atomic mass will be used, when False all atoms have a mass of 1
-        :param read_fragments: boolean, default False, when True, multiple molecules in one file will be treated 
+        :param read_fragments: boolean, default False, when True, multiple molecules in one file will be treated
                                 as "chains" of one composite molecule
-        :param use_sequence: boolean, default False, for pdb files only-- uses pdb sequence information to establish 
+        :param use_sequence: boolean, default False, for pdb files only-- uses pdb sequence information to establish
                                 equivalence (overwrites default equivalence)
-        :param keep_structure: boolean, default False. If keep-structure is specified and molecule has no bond information, 
+        :param keep_structure: boolean, default False. If keep-structure is specified and molecule has no bond information,
                                 the peogram will raise an error and exit
-        :return: an instance of class Molecule 
+        :return: an instance of class Molecule
         """
         # suppress warnings from openbabel
 
         format = get_format(in_format, in_file_name)
-        if format == "csm":
-            mol = MoleculeReader._read_csm_file(in_file_name, ignore_sym, use_mass)
-        else:
+        if True:
             obm = MoleculeReader._obm_from_file(in_file_name, format, babel_bond)
-            mol = MoleculeReader.mol_from_obm(obm, format, ignore_sym=ignore_sym, use_mass=use_mass, read_fragments=read_fragments)
+            mol = MoleculeReader.mol_from_obm(obm, format, ignore_sym=ignore_sym, use_mass=use_mass,
+                                              read_fragments=read_fragments)
         return MoleculeReader._process_single_molecule(mol, in_file_name, format, initialize,
-                                                       use_chains, babel_bond,
-                                                       remove_hy, ignore_sym, use_mass,
-                                                       read_fragments, use_sequence,
-                                                       keep_structure, select_atoms, conn_file)
+                                                      use_chains, babel_bond,
+                                                      remove_hy, ignore_sym, use_mass,
+                                                      read_fragments, use_sequence,
+                                                      keep_structure, select_atoms, conn_file,
+                                                      out_format)
 
     @staticmethod
     def _process_single_molecule(mol, in_file_name, format, initialize=True,
                                  use_chains=False, babel_bond=False,
                                  remove_hy=False, ignore_sym=False, use_mass=False,
                                  read_fragments=False, use_sequence=False,
-                                 keep_structure=False, select_atoms=[], conn_file=None, **kwargs):
+                                 keep_structure=False, select_atoms=[], conn_file=None,
+                                 out_format=None, **kwargs):
 
         mol.metadata.format=format
         mol.metadata.babel_bond=babel_bond
@@ -944,6 +948,7 @@ class MoleculeReader:
                            remove_hy=False, ignore_sym=False, use_mass=False,
                            read_fragments=False, use_sequence=False,
                            keep_structure=False, select_atoms=[], conn_file=None,
+                           out_format=None,
                            *args, **kwargs):
         mols = []
         format = get_format(in_format, in_file_name)
@@ -955,29 +960,31 @@ class MoleculeReader:
         else:
             obms = MoleculeReader._obm_from_file(in_file_name, format, babel_bond)
             if read_fragments:
-                mol = MoleculeReader.mol_from_obm(obms, format, babel_bond=babel_bond, ignore_sym=ignore_sym, use_mass=use_mass, read_fragments=read_fragments)
+                mol = MoleculeReader.mol_from_obm(obms, format, babel_bond=babel_bond, ignore_sym=ignore_sym,
+                                                  use_mass=use_mass, read_fragments=read_fragments)
                 mols.append(mol)
 
             else:
                 for obm in obms:
-                    mol = MoleculeReader.mol_from_obm([obm], format, babel_bond=babel_bond, ignore_sym=ignore_sym, use_mass=use_mass)
+                    mol = MoleculeReader.mol_from_obm([obm], format, babel_bond=babel_bond, ignore_sym=ignore_sym,
+                                                      use_mass=use_mass)
                     mols.append(mol)
 
-        processed_mols=[]
-        use_filename=True
-        if len(mols)>1:
-            use_filename=False
+        processed_mols = []
+        use_filename = True
+        if len(mols) > 1:
+            use_filename = False
         for index, mol in enumerate(mols):
             p_mol = MoleculeReader._process_single_molecule(mol, in_file_name, format, initialize,
-                                                          use_chains, babel_bond,
-                                                          remove_hy, ignore_sym, use_mass,
-                                                          read_fragments, use_sequence,
-                                                          keep_structure, select_atoms, conn_file)
-            p_mol.metadata.index=index
-            p_mol.metadata.use_filename=use_filename
+                                                            use_chains, babel_bond,
+                                                            remove_hy, ignore_sym, use_mass,
+                                                            read_fragments, use_sequence,
+                                                            keep_structure, select_atoms, conn_file,
+                                                            out_format)
+            p_mol.metadata.index = index
+            p_mol.metadata.use_filename = use_filename
             processed_mols.append(p_mol)
         return processed_mols
-
 
     @staticmethod
     def _obm_from_strings(strings, format, babel_bond=False):
@@ -993,7 +1000,7 @@ class MoleculeReader:
             raise ValueError("Error setting openbabel format to" + format)
         if not babel_bond:
             conv.SetOptions("b", conv.INOPTIONS)
-        obmols=[]
+        obmols = []
         for string in strings:
             conv.ReadString(obmol, string)
             obmols.append(obmol)
@@ -1014,7 +1021,7 @@ class MoleculeReader:
             format = get_format(format, filename)
         if not conv.SetInFormat(format):
             raise ValueError("Error setting openbabel format to" + format)
-        if format=="txt":
+        if format == "txt":
             raise ValueError("CSM does not support .txt format openbabel conversions")
         if not babel_bond:
             conv.SetOptions("b", conv.INOPTIONS)
@@ -1028,9 +1035,9 @@ class MoleculeReader:
             notatend = conv.Read(obmol)
         return obmols
 
-
     @staticmethod
-    def mol_from_obm(obmols, format, babel_bond=False, ignore_sym=False, use_mass=False, read_fragments=False, **kwargs):
+    def mol_from_obm(obmols, format, babel_bond=False, ignore_sym=False, use_mass=False, read_fragments=False,
+                     **kwargs):
         """
         :param obmol: OBmol molecule
         :param args_dict: dictionary of processed command line arguments
@@ -1039,9 +1046,9 @@ class MoleculeReader:
         if not read_fragments:
             obmols = obmols[:1]
         atoms = []
-        mol_contents=[]
+        mol_contents = []
         for obmol_id, obmol in enumerate(obmols):
-            title_contents=obmol.GetTitle()
+            title_contents = obmol.GetTitle()
             mol_contents.append(mol_string_from_obm(obmol, format))
             for i, obatom in enumerate(OBMolAtomIter(obmol)):
                 position = (obatom.GetX(), obatom.GetY(), obatom.GetZ())
@@ -1066,9 +1073,10 @@ class MoleculeReader:
                 atoms.append(atom)
 
         mol = Molecule(atoms)
-        mol.metadata.file_content=mol_contents
-        mol.metadata.title=title_contents
+        mol.metadata.file_content = mol_contents
+        mol.metadata._title = title_contents
         return mol
+
 
     @staticmethod
     def _read_pdb_connectivity_and_chains(filename, mol, read_fragments, babel_bond):
@@ -1162,7 +1170,7 @@ class MoleculeReader:
                 pdb_dict = PDBLine(line)
                 if pdb_dict.record_name in ['ATOM', 'HETATM'] and cur_atom < len(mol):
                     if remove_hy or ignore_hy:
-                        if pdb_dict.atom_symbol=="H":
+                        if pdb_dict.atom_symbol == "H":
                             continue
                     read_atom(line, likeness_dict, cur_atom)
                     cur_atom += 1
@@ -1177,9 +1185,6 @@ class MoleculeReader:
         mol.normalize()
 
         return mol
-
-
-
 
 def mol_string_from_obm(obmol, format):
     obconversion = OBConversion()

@@ -71,7 +71,7 @@ class OBMolWriter:
             f.write("\nMODEL 01")
         f.write("\nINITIAL STRUCTURE COORDINATES\n")
 
-        obmol = MoleculeReader._obm_from_file(result.molecule.metadata.filename,
+        obmol = MoleculeReader._obm_from_file(result.molecule.metadata.filepath,
                                               result.molecule.metadata.format,
                                               result.molecule.metadata.babel_bond)[0]
         for to_remove in result.molecule._deleted_atom_indices:
