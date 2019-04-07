@@ -1,3 +1,5 @@
+from shutil import copyfile
+
 from setuptools import setup #if this import statement dooes not come first, weird errors happen
 #see: https://stackoverflow.com/questions/21594925/error-each-element-of-ext-modules-option-must-be-an-extension-instance-or-2-t
 from distutils.extension import Extension
@@ -68,8 +70,15 @@ class PrepareCommand(setuptools.Command):
 
     def run(self):
         print("running prepare command")
+        self.copy_md_files()
         self.copy_source_files()
         self.convert_to_c()
+
+    def copy_md_files(self):
+        # Copy LICENSE.md and README.md from our parent directory, so that setup.py sdist finds them later
+        print('Copying md files from project root')
+        copyfile(os.path.join('..', 'README.md'), 'README.md')
+        copyfile(os.path.join('..', 'LICENSE.md'), 'LICENSE.md')
 
     def copy_source_files(self):
         #this may be used for copying openbabel file eventually?

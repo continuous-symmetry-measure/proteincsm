@@ -21,3 +21,6 @@ proteincsm.egg-info/
 python/csm/CPP_wrapper/fast.h
 python/csm/CPP_wrapper/fast.cpp
 python/cython-munkres/src/cython_munkres.cpp
+# The following files are copied by setup.py prepare
+python/README.md
+python/LICENSE.md
