@@ -5,4 +5,4 @@ LABEL by="The Research Software Company"
 LABEL website="https://www.chelem.co.il"
 
 RUN pip install numpy
-RUN pip install --no-cache --extra-index-url https://repo.fury.io/theresearchsoftwarecompany proteincsm
+RUN pip install proteincsm==1.0.0

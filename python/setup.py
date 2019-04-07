@@ -11,7 +11,8 @@ import re
 import glob
 from setuptools.command.build_ext import build_ext as _build_ext
 
-with open(os.path.join(os.path.dirname(__file__), '..', 'README.md')) as readme:
+# Prepare should copy README.md to this location
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
 
 # allow setup.py to be run from any path
@@ -115,7 +116,7 @@ setup(
     license='GPL2',
     description='The Continuous Symmetry Measure for Proteins',
     long_description=README,
-    url='https://github.com/continuous-symmetry/proteincsm/tree/v1.0.0',
+    url='https://github.com/continuous-symmetry/proteincsm/tree/v%s' % csm_version,
     author='The Research Software Company',
     author_email='itay@chelem.co.il',
 
