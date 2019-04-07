@@ -31,7 +31,7 @@ ProteinCSM is available using Conda, and is described in the file conda_install_
 
 ### INSTALLATION 
 
-CSM can be installed using:
+ProteinCSM can be installed using:
 
 `pip install proteincsm`
 
