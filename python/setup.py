@@ -51,7 +51,7 @@ def get_version():
     pattern = r"__version__\s*=\s*'(?P<version>.*)'"
     match = re.match(pattern, code)
     if not match:
-        raise ValueError("Version file must contain one line: __version__='...'")
+        raise ValueError("Version file must contain one line: __version__='..c.'")
     version = match.group("version")
     return version
 
@@ -77,7 +77,7 @@ class PrepareCommand(setuptools.Command):
 
     def convert_to_c(self):
         #creates fast.h and fast.c in cpp_wrapper folder
-        print('Converting csm pyx files to C++ sources...')
+        print('Converting Protein CSM pyx files to C++ sources...')
         pyx = './csm/CPP_wrapper/fast.pyx'
         self.cython(pyx)
         print('Converting munkres pyx files to C++ sources...')
@@ -95,7 +95,7 @@ class PrepareCommand(setuptools.Command):
         self.announce('Converted %s to C++' % pyx)
 
 csm_version = get_version()
-print("Packaging CSM version %s" % csm_version)
+print("Packaging Protein CSM version %s" % csm_version)
 setup(
     name='proteincsm',
     version=csm_version,
@@ -103,8 +103,8 @@ setup(
     setup_requires=['numpy>=1.10'],
     install_requires=['numpy>=1.10', 'openbabel>=2.4.0'],
     include_package_data=True,
-    license='Chelem',  # example license
-    description='The Continuous Symmetry Measure',
+    license='3 Clause BSD',
+    description='The Continuous Symmetry Measure for Proteins',
     long_description=README,
     url='http://www.csm.huji.ac.il/new/',
     author='The Research Software Company',
@@ -113,7 +113,7 @@ setup(
     # The csm command
     entry_points={
         'console_scripts': [
-            'csm = csm.main.csm_run:run_no_return',
+            'proteincsm = csm.main.csm_run:run_no_return',
         ]
     },
 

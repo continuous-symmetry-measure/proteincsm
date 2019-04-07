@@ -15,12 +15,12 @@ __author__ = 'zmbq'
 class OurParser(ArgumentParser):
     def error(self, message):
         print("Error: %s" % message, file=sys.stderr)
-        print("Enter csm --help for help", file=sys.stderr)
+        print("Run proteincsm --help for help", file=sys.stderr)
         sys.exit(2)
 
 
 def _create_parser():
-    parser = OurParser(usage="\ncsm type input_molecule output_file [additional arguments]", allow_abbrev=False)
+    parser = OurParser(usage="\nproteincsm type input_molecule output_file [additional arguments]", allow_abbrev=False)
 
     parser.add_argument('type',
                         # choices=c_symmetries + s_symmetries + ['cs', 'ci', 'ch'],
@@ -34,13 +34,13 @@ def _create_parser():
     calculation_type = parser.add_argument_group('Calculation Type (default is approx with hungarian algorithm)')
     _calculation_type=calculation_type.add_mutually_exclusive_group()
     _calculation_type.add_argument('--trivial', action='store_const', const='trivial', default='approx', dest='calc_type',
-                                  help='CSM of identity perm, or, if chains, CSM of chain permutation with no atom permutation')
+                                  help='Protein CSM of identity perm, or, if chains, CSM of chain permutation with no atom permutation')
     _calculation_type.add_argument('--greedy', action='store_const', const='greedy', default='many-chains', dest='approx_algorithm',
                              help='Use the old greedy approx algorithm (no hungarian)-- not relevant for trivial')
 
 
     parser.add_argument('--timeout', default=300,
-                        help="Specify a timeout for CSM in seconds. Default is 5 minutes (300)", type=int)
+                        help="Specify a timeout for Protein CSM in seconds. Default is 5 minutes (300)", type=int)
     parser.add_argument('--sn-max', type=int, default=8, help='The maximal sn to try, relevant only for chirality')
 
     # general input/calculation arguments:
