@@ -106,7 +106,7 @@ setup(
     license='GPL2',
     description='The Continuous Symmetry Measure for Proteins',
     long_description=README,
-    url='http://www.csm.huji.ac.il/new/',
+    url='https://github.com/continuous-symmetry/proteincsm/tree/v1.0.0',
     author='The Research Software Company',
     author_email='itay@chelem.co.il',
 
