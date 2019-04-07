@@ -34,13 +34,13 @@ def _create_parser():
     calculation_type = parser.add_argument_group('Calculation Type (default is approx with hungarian algorithm)')
     _calculation_type=calculation_type.add_mutually_exclusive_group()
     _calculation_type.add_argument('--trivial', action='store_const', const='trivial', default='approx', dest='calc_type',
-                                  help='Protein CSM of identity perm, or, if chains, CSM of chain permutation with no atom permutation')
+                                  help='ProteinCSM of identity perm, or, if chains, CSM of chain permutation with no atom permutation')
     _calculation_type.add_argument('--greedy', action='store_const', const='greedy', default='many-chains', dest='approx_algorithm',
                              help='Use the old greedy approx algorithm (no hungarian)-- not relevant for trivial')
 
 
     parser.add_argument('--timeout', default=300,
-                        help="Specify a timeout for Protein CSM in seconds. Default is 5 minutes (300)", type=int)
+                        help="Specify a timeout for the calculation in seconds. Default is 5 minutes (300)", type=int)
     parser.add_argument('--sn-max', type=int, default=8, help='The maximal sn to try, relevant only for chirality')
 
     # general input/calculation arguments:

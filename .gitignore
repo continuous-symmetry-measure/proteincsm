@@ -17,3 +17,7 @@ env/
 /python/tests/test_cases/t05_crown12/*.json
 /python/tests/test_cases/t05_crown12/molecules/*.xyz
 *.json
+proteincsm.egg-info/
+python/csm/CPP_wrapper/fast.h
+python/csm/CPP_wrapper/fast.cpp
+python/cython-munkres/src/cython_munkres.cpp

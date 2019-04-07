@@ -1,8 +1,8 @@
-# proteincsm
+# ProteinCSM
 
 ## INTRODUCTION
 
-The proteincsm program calculates continuous symmetry and chirality measures of protein homomers in pdb format.
+The ProteinCSM program calculates continuous symmetry and chirality measures of protein homomers in pdb format.
 Please note that pdb files should be cleaned prior to calculation. Our code pdb_prep can be used for this purpose (https://sagivba.github.io/pdb_prep).
 
 ## USAGE
@@ -26,7 +26,8 @@ version 2.4.0 or later.
 * openbabel's python bindings (`pip install openbabel`) 
 * numpy (`pip install numpy`)
 
-Because installing openbabel correctly is a delicate and bug-prone process, an alternative method of installing CSM is available using Conda, and is described in the file conda_install_instructions.txt
+Because installing openbabel correctly is a delicate and bug-prone process, an alternative method of installing 
+ProteinCSM is available using Conda, and is described in the file conda_install_instructions.txt
 
 ### INSTALLATION 
 
@@ -34,11 +35,11 @@ CSM can be installed using:
 
 `pip install proteincsm`
 
-You can also install Protein CSM from the source. 
+You can also install ProteinCSM from the source. 
 
 ## CITATIONS 
 
-Please cite Protein CSM using the following:
+Please cite ProteinCSM using the following:
 
 proteincsm:
 

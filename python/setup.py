@@ -9,7 +9,7 @@ import re
 import glob
 from setuptools.command.build_ext import build_ext as _build_ext
 
-with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+with open(os.path.join(os.path.dirname(__file__), '..', 'README.md')) as readme:
     README = readme.read()
 
 # allow setup.py to be run from any path
@@ -77,7 +77,7 @@ class PrepareCommand(setuptools.Command):
 
     def convert_to_c(self):
         #creates fast.h and fast.c in cpp_wrapper folder
-        print('Converting Protein CSM pyx files to C++ sources...')
+        print('Converting ProteinCSM pyx files to C++ sources...')
         pyx = './csm/CPP_wrapper/fast.pyx'
         self.cython(pyx)
         print('Converting munkres pyx files to C++ sources...')
@@ -95,7 +95,7 @@ class PrepareCommand(setuptools.Command):
         self.announce('Converted %s to C++' % pyx)
 
 csm_version = get_version()
-print("Packaging Protein CSM version %s" % csm_version)
+print("Packaging ProteinCSM version %s" % csm_version)
 setup(
     name='proteincsm',
     version=csm_version,
@@ -103,7 +103,7 @@ setup(
     setup_requires=['numpy>=1.10'],
     install_requires=['numpy>=1.10', 'openbabel>=2.4.0'],
     include_package_data=True,
-    license='3 Clause BSD',
+    license='GPL2',
     description='The Continuous Symmetry Measure for Proteins',
     long_description=README,
     url='http://www.csm.huji.ac.il/new/',
