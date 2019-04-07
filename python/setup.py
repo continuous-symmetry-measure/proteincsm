@@ -118,10 +118,10 @@ setup(
     },
 
     classifiers=[
-        'Development Status:: 4 - Beta',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: Other/Proprietary License',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.5',
