@@ -42,9 +42,7 @@ You can also install ProteinCSM from the source.
 Please cite ProteinCSM using the following:
 
 proteincsm:
-
-> Tuvi-Arad I. and Alon G., "Improved Algorithms for Quantifying the Near Symmetry of Proteins: Complete Side Chains Analysis" (submitted). 
-> Dryzun C., Zait A. and Avnir D., "Quantitative Symmetry and Chirality - A Fast Computational Algorithm for Large Structures: Proteins, Macromolecules, Nanotubes, and Unit Cells", J. Comput. Chem., 32, 2526-2538 (2011). 
+>I. Tuvi-Arad and G. Alon, "Improved Algorithms for Quantifying the Near Symmetry of Proteins: Complete Side Chains Analysis", Journal of Cheminformatics, 11(1):39 (2019).
 
 
 Exact Algorithm for calculating the CSM of molecules:
@@ -63,7 +61,7 @@ Original Code by Avnir and coworkers:
 
 **Science/Math:**
 
-Dr. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel
+Prof. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel
 
 Dr. Gil Alon, Department of Mathematics and Computer Science, The Open University of Israel
 
@@ -86,7 +84,7 @@ The code for the hungarian algorithm is copyright (c) 2012, Jacob Frelinger
 
 ## CONTACT
 
-Dr. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel, E-mail: inbaltu@openu.ac.il
+Prof. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel, E-mail: inbaltu@openu.ac.il
 
 
 
