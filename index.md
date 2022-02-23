@@ -1,37 +1,93 @@
-## Welcome to GitHub Pages
+# ProteinCSM
 
-You can use the [editor on GitHub](https://github.com/continuous-symmetry-measure/proteincsm/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## INTRODUCTION
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The ProteinCSM program calculates continuous symmetry and chirality measures of protein homomers in pdb format.
+Please note that pdb files should be cleaned prior to calculation. Our code pdb_prep can be used for this purpose (https://continuous-symmetry-measure.github.io/pdb_prep/).
 
-### Markdown
+An online calculator is avilable at: http://csm.ouproj.org.il. 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+## USAGE
 
-# Header 1
-## Header 2
-### Header 3
+After installation, the program can be called from the command line. For example:
 
-- Bulleted
-- List
+`proteincsm c2 inputmol.pdb output.pdb --optional-args`
 
-1. Numbered
-2. List
+You can access a help menu with a list of all available options via `proteincsm -h`
 
-**Bold** and _Italic_ and `Code` text
+## INSTALLATION
 
-[Link](url) and ![Image](src)
-```
+proteincsm can be installed on Windows and Linux machines.
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+### REQUIREMENTS
 
-### Jekyll Themes
+Before installing CSM, please install:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/continuous-symmetry-measure/proteincsm/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+* Openbabel (http://openbabel.org/wiki/Category:Installation), 
+version 2.4.0 or later.
+* openbabel's python bindings (`pip install openbabel`) 
+* numpy (`pip install numpy`)
 
-### Support or Contact
+Because installing openbabel correctly is a delicate and bug-prone process, an alternative method of installing 
+ProteinCSM is available using Conda, and is described in the file conda_install_instructions.txt
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### INSTALLATION 
+
+ProteinCSM can be installed using:
+
+`pip install proteincsm`
+
+You can also install ProteinCSM from the source. 
+
+## CITATIONS 
+
+Please cite ProteinCSM using the following:
+
+proteincsm:
+>I. Tuvi-Arad and G. Alon, "Improved Algorithms for Quantifying the Near Symmetry of Proteins: Complete Side Chains Analysis", Journal of Cheminformatics, 11(1):39 (2019).
+
+
+Exact Algorithm for calculating the CSM of molecules:
+
+> Alon G. and Tuvi-Arad I., "Improved algorithms for symmetry analysis: Structure preserving permutations", J. Math. Chem., 56(1), 193-212 (2018).
+
+Original Code by Avnir and coworkers:
+
+> Pinsky M., Dryzun C., Casanova D., Alemany P., Avnir D., "Analytical Methods for Calculating Continuous Symmetry Measures and the Chirality Measure", Journal of Computational Chemistry 29(16): 2712-2721 (2008).
+
+> Zabrodsky H., Peleg S., Avnir D., "Continuous symmetry measures", Journal of the American Chemical Society 114(20): 7843-7851 (1992).
+
+
+
+## CREDITS
+
+**Science/Math:**
+
+Prof. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel
+
+Dr. Gil Alon, Department of Mathematics and Computer Science, The Open University of Israel
+
+Prof. David Avnir, Institute of Chemistry, The Hebrew University of Jerusalem
+
+**Programming:**
+
+The Research Software Company (www.chelem.co.il)
+
+**Testing, scripts and additional technical support:**
+
+Sagiv Barhoom,The Open University of Israel
+
+**Intensive testing:**
+
+Yaffa Shalit, The Open University of Israel
+
+The code for the hungarian algorithm is copyright (c) 2012, Jacob Frelinger
+
+
+## CONTACT
+
+Prof. Inbal Tuvi-Arad, Department of Natural Sciences, The Open University of Israel, E-mail: inbaltu@openu.ac.il
+
+
+
