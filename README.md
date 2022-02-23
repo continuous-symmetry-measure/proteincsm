@@ -3,7 +3,7 @@
 ## INTRODUCTION
 
 The ProteinCSM program calculates continuous symmetry and chirality measures of protein homomers in pdb format.
-Please note that pdb files should be cleaned prior to calculation. Our code pdb_prep can be used for this purpose (https://sagivba.github.io/pdb_prep).
+Please note that pdb files should be cleaned prior to calculation. Our code pdb_prep can be used for this purpose (https://continuous-symmetry-measure.github.io/pdb_prep/).
 
 An online calculator is avilable at: http://csm.ouproj.org.il. 
 
