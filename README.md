@@ -1,5 +1,9 @@
 # ProteinCSM
 
+IMPORTANT!
+
+This repository has been superceded by csm, available here [csm](https://github.com/continuous-symmetry-measure/csm).
+
 ## INTRODUCTION
 
 The ProteinCSM program calculates continuous symmetry and chirality measures of protein homomers in pdb format.
